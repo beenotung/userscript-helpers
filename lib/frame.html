@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frame</title>
+  </head>
+  <body>
+    <h1>Frame</h1>
+    <div id="messageContainer">
+      <p>Loading...</p>
+    </div>
+    <script>
+      let max_log_count = 10
+
+      window.addEventListener('message', async event => {
+        if (event.origin == window.origin) return
+        if (event.data.type == 'host-ready') {
+          log('host window connected')
+        }
+        if (event.data.type == 'fetch') {
+          let { id, url, init } = event.data
+          log('#' + id, init?.method || 'GET', url)
+          let json = await fetch(url, init)
+            .then(res => res.json())
+            .catch(err => ({ error: String(err) }))
+          send({ type: 'fetch-result', id, json })
+          return
+        }
+        console.log('event.data:', event.data)
+      })
+
+      function send(data) {
+        self.opener.postMessage(data, '*')
+      }
+
+      send({ type: 'frame-ready' })
+
+      messageContainer.textContent = ''
+      log('waiting init-frame message')
+
+      function log(...args) {
+        let p = document.createElement('p')
+        let date = new Date()
+        let h = date.getHours().toString().padStart(2, '0')
+        let m = date.getMinutes().toString().padStart(2, '0')
+        let s = date.getSeconds().toString().padStart(2, '0')
+        p.textContent = `[${h}:${m}:${s}] ${args.join(' ')}`
+        messageContainer.appendChild(p)
+        while (messageContainer.childElementCount > max_log_count) {
+          messageContainer.children[0].remove()
+        }
+      }
+    </script>
+  </body>
+</html>

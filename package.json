@@ -1,13 +1,14 @@
 {
   "name": "userscript-helpers",
   "version": "0.0.0",
-  "description": "",
-  "keywords": [],
-  "author": {
-    "name": "Beeno Tung",
-    "email": "aabbcc1241@yahoo.com.hk",
-    "url": "https://beeno-tung.surge.sh"
-  },
+  "description": "Helper functions for userscript with server connection.",
+  "keywords": [
+    "userscript",
+    "typescript",
+    "express",
+    "proxy"
+  ],
+  "author": "Beeno Tung <aabbcc1241@yahoo.com.hk> (https://beeno-tung.surge.sh)",
   "license": "BSD-2-Clause",
   "repository": {
     "type": "git",

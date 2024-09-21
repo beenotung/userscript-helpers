@@ -15,7 +15,7 @@
     "bundle": "esbuild example/userscript.ts --bundle --outfile=bundle.js",
     "test": "tsc --noEmit",
     "clean": "rimraf dist",
-    "build": "rimraf dist && tsc -p . && rimraf dist/tsconfig.tsbuildinfo",
+    "build": "rimraf dist && tsc -p . && rimraf dist/tsconfig.tsbuildinfo && cp lib/frame.html dist/frame.html",
     "tsc": "tsc -p ."
   },
   "dependencies": {

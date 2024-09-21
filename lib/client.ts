@@ -58,8 +58,8 @@ export async function setupFrame(options: {
 
   let messageCount = 0
 
-  function callAPI(url: string, init: RequestInit) {
-    return new Promise((resolve, reject) => {
+  function callAPI<T>(url: string, init: RequestInit) {
+    return new Promise<T>((resolve, reject) => {
       messageCount++
       let id = messageCount
       let listener = (event: MessageEvent) => {
@@ -81,9 +81,9 @@ export async function setupFrame(options: {
     })
   }
 
-  function fetchJSON(method: string, url: string, body?: object) {
+  function fetchJSON<T>(method: string, url: string, body?: object) {
     if (body) {
-      return callAPI(url, {
+      return callAPI<T>(url, {
         method,
         headers: {
           'Accept': 'application/json',
@@ -92,7 +92,7 @@ export async function setupFrame(options: {
         body: JSON.stringify(body),
       })
     } else {
-      return callAPI(url, {
+      return callAPI<T>(url, {
         method,
         headers: {
           Accept: 'application/json',
@@ -101,8 +101,8 @@ export async function setupFrame(options: {
     }
   }
 
-  function postForm(url: string, formData: FormData) {
-    return callAPI(url, { method: 'POST', body: formData })
+  function postForm<T>(url: string, formData: FormData) {
+    return callAPI<T>(url, { method: 'POST', body: formData })
   }
 
   function startLoop(options: {
@@ -148,6 +148,9 @@ export async function setupFrame(options: {
   }
 }
 
+/**
+ * @description async version of setTimeout
+ */
 export function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise<void>(resolve => setTimeout(resolve, ms))
 }

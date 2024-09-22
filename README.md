@@ -78,7 +78,7 @@ main().catch(e => console.error(e))
 **Server-side functions**:
 
 ```typescript
-export function attachFrameRoute(app: Router | Application): Promise<void>
+export function attachFrameRoute(app: Router | Application): void
 ```
 
 **Client-side functions for userscript**:

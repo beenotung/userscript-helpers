@@ -1,4 +1,5 @@
-import { setupFrame, sleep } from '../lib/client'
+import { imageToDataUrl, setupFrame } from '../lib/client'
+import { sleep } from '../lib/utils'
 
 async function main() {
   let frame = await setupFrame({
@@ -13,7 +14,11 @@ async function main() {
         if (!url || imgs.has(img)) continue
         img.scrollIntoView({ behavior: 'smooth' })
         await sleep(500)
-        let json = await frame.fetchJSON('POST', '/img', { url })
+        let json = await frame.fetchJSON('POST', '/img', {
+          url: url.startsWith('data:') ? 'inline' : url,
+          alt: img.alt,
+          dataUrl: await imageToDataUrl(img, 'image/webp', 0.5),
+        })
         console.log('post img result:', json)
         imgs.add(img)
       }

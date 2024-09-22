@@ -75,9 +75,13 @@ main().catch(e => console.error(e))
 
 ## Typescript Signature
 
+**Server-side functions**:
+
 ```typescript
 export function attachFrameRoute(app: Router | Application): Promise<void>
 ```
+
+**Client-side functions for userscript**:
 
 ```typescript
 export function setupFrame(options: {
@@ -106,10 +110,34 @@ export function setupFrame(options: {
 
 export type LoopResult = void | 'stop'
 
+export declare function imageToDataUrl(
+  img: HTMLImageElement,
+  /** @description default is as-is for image with dataUrl, and "image/png" for image with src */
+  mimeType?: ImageMimeType,
+  /** @description between 0 and 1 */
+  quality?: number,
+): Promise<string>
+
+export type ImageMimeType = 'image/png' | 'image/jpeg' | 'image/webp'
+```
+
+**Additional helper functions for any side**:
+
+```typescript
 /**
  * @description async version of setTimeout
  */
 export function sleep(ms: number): Promise<void>
+
+/**
+ * @returns mimetype, e.g. "image/webp"
+ */
+export function dataUrlToMimeType(dataUrl: string): string
+
+/**
+ * @return extname without ".", e.g. "webp"
+ */
+export function dataUrlToExtname(dataUrl: string): string
 ```
 
 ## License

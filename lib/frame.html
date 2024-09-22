@@ -24,6 +24,7 @@
           let json = await fetch(url, init)
             .then(res => res.json())
             .catch(err => ({ error: String(err) }))
+          // console.log('fetch', { url, init, json })
           send({ type: 'fetch-result', id, json })
           return
         }

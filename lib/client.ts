@@ -148,9 +148,45 @@ export async function setupFrame(options: {
   }
 }
 
-/**
- * @description async version of setTimeout
- */
-export function sleep(ms: number) {
-  return new Promise<void>(resolve => setTimeout(resolve, ms))
+export type ImageMimeType = 'image/png' | 'image/jpeg' | 'image/webp'
+
+export async function imageToDataUrl(
+  img: HTMLImageElement,
+  /** @description default is as-is for image with dataUrl, and "image/png" for image with src */
+  mimeType?: ImageMimeType,
+  /** @description between 0 and 1 */
+  quality?: number,
+): Promise<string> {
+  if (
+    mimeType
+      ? img.src.startsWith('data:' + mimeType)
+      : img.src.startsWith('data:')
+  ) {
+    return img.src
+  }
+  try {
+    let canvas = document.createElement('canvas')
+    canvas.width = img.naturalWidth
+    canvas.height = img.naturalHeight
+    let context = canvas.getContext('2d')!
+    context.drawImage(img, 0, 0)
+    let dataUrl = canvas.toDataURL(mimeType, quality)
+    return dataUrl
+  } catch (error) {
+    let res = await fetch(img.src)
+    let blob = await res.blob()
+    let reader = new FileReader()
+    return new Promise<string>((resolve, reject) => {
+      reader.onload = () => {
+        let image = new Image()
+        image.onload = () => {
+          imageToDataUrl(image).then(resolve).catch(reject)
+        }
+        image.onerror = reject
+        image.src = reader.result as string
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }
 }

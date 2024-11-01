@@ -106,6 +106,8 @@ export function setupFrame(options: {
      */
     error_retry_interval?: number
   }) => void
+  isCurrentIteration: () => boolean
+  stopIteration: (context?: string) => void
 }>
 
 export type LoopResult = void | 'stop'

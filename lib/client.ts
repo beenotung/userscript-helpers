@@ -26,10 +26,18 @@ export async function setupFrame(options: {
 
   let messageListeners = new Set<(event: MessageEvent) => void>()
 
-  function stopIteration(context: string) {
-    console.log('detected next iteration, stop ' + context)
+  function stopIteration(context?: string) {
+    if (context) {
+      console.log('detected next iteration, stop ' + context)
+    } else {
+      console.log('stop iteration')
+    }
     window.removeEventListener('message', onmessage)
     proxyWindowPromise.then(proxyWindow => proxyWindow.close())
+  }
+
+  function isCurrentIteration() {
+    return win._frame_iteration_ == current_iteration
   }
 
   let proxyWindowPromise = new Promise<Window>(resolve => {
@@ -39,7 +47,7 @@ export async function setupFrame(options: {
       return
     }
     onmessage = event => {
-      if (win._frame_iteration_ != current_iteration) {
+      if (!isCurrentIteration()) {
         stopIteration('onmessage()')
         return
       }
@@ -145,6 +153,8 @@ export async function setupFrame(options: {
     fetchJSON,
     postForm,
     startLoop,
+    isCurrentIteration,
+    stopIteration,
   }
 }
 
